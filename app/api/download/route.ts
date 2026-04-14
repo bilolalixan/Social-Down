@@ -1,181 +1,145 @@
 import { NextRequest, NextResponse } from "next/server";
-import { exec } from "child_process";
-import { promisify } from "util";
 
-const execAsync = promisify(exec);
-
-function detectPlatform(url: string): string {
-  if (/instagram\.com/i.test(url)) return "Instagram";
-  if (/tiktok\.com/i.test(url)) return "TikTok";
-  if (/youtube\.com|youtu\.be/i.test(url)) return "YouTube";
-  if (/facebook\.com|fb\.com|fb\.watch/i.test(url)) return "Facebook";
-  if (/twitter\.com|x\.com/i.test(url)) return "Twitter/X";
-  if (/t\.me|telegram\.org/i.test(url)) return "Telegram";
-  if (/vimeo\.com/i.test(url)) return "Vimeo";
-  if (/pinterest\.com/i.test(url)) return "Pinterest";
-  if (/twitch\.tv/i.test(url)) return "Twitch";
-  if (/reddit\.com/i.test(url)) return "Reddit";
-  return "Video";
-}
-
-function isValidUrl(url: string): boolean {
+function isValidUrl(url: string) {
   try {
-    const parsed = new URL(url);
-    return ["http:", "https:"].includes(parsed.protocol);
+    const u = new URL(url);
+    return u.protocol === "http:" || u.protocol === "https:";
   } catch {
     return false;
   }
 }
 
-function formatDuration(seconds: number): string {
-  if (!seconds || isNaN(seconds)) return "";
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = Math.floor(seconds % 60);
-  if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-  return `${m}:${String(s).padStart(2, "0")}`;
-}
+// Cobalt API instances (public, free)
+const COBALT_INSTANCES = [
+  "https://cobalt.tools/api",
+  "https://api.cobalt.tools",
+];
 
-interface YtDlpFormat {
-  format_id: string;
-  ext: string;
-  resolution?: string;
-  height?: number;
-  width?: number;
-  filesize?: number;
-  filesize_approx?: number;
-  url: string;
-  vcodec?: string;
-  acodec?: string;
-  abr?: number;
-  quality?: number;
-  format_note?: string;
-}
-
-interface YtDlpInfo {
-  title: string;
-  thumbnail: string;
-  duration: number;
-  formats: YtDlpFormat[];
-  webpage_url: string;
-}
-
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   let url: string;
-
   try {
-    const body = await request.json();
+    const body = await req.json();
     url = body.url?.trim();
   } catch {
-    return NextResponse.json({ error: "Noto'g'ri so'rov formati." }, { status: 400 });
+    return NextResponse.json({ error: "Noto'g'ri so'rov." }, { status: 400 });
   }
 
-  if (!url) {
-    return NextResponse.json({ error: "Havola kiritilmadi." }, { status: 400 });
-  }
+  if (!url) return NextResponse.json({ error: "Havola kiritilmadi." }, { status: 400 });
+  if (!isValidUrl(url)) return NextResponse.json({ error: "Havola noto'g'ri. To'liq URL manzilini kiriting." }, { status: 400 });
 
-  if (!isValidUrl(url)) {
-    return NextResponse.json({ error: "Havola noto'g'ri. To'liq URL manzilini kiriting." }, { status: 400 });
-  }
-
-  // Check if yt-dlp is available
-  try {
-    await execAsync("which yt-dlp || yt-dlp --version");
-  } catch {
-    // yt-dlp not installed — return demo data for development
-    return NextResponse.json(getDemoResponse(url));
-  }
-
-  try {
-    const { stdout } = await execAsync(
-      `yt-dlp --dump-json --no-warnings --no-playlist "${url.replace(/"/g, "")}"`,
-      { timeout: 30000 }
-    );
-
-    const info: YtDlpInfo = JSON.parse(stdout);
-
-    // Filter and sort formats
-    const formats = (info.formats || [])
-      .filter((f: YtDlpFormat) => f.url && !f.url.startsWith("manifest"))
-      .reduce((acc: YtDlpFormat[], f: YtDlpFormat) => {
-        // Include video formats with audio, and audio-only
-        const hasVideo = f.vcodec && f.vcodec !== "none";
-        const hasAudio = f.acodec && f.acodec !== "none";
-        if ((hasVideo && hasAudio) || (!hasVideo && hasAudio)) {
-          acc.push(f);
-        }
-        return acc;
-      }, [])
-      .sort((a: YtDlpFormat, b: YtDlpFormat) => (b.height || 0) - (a.height || 0))
-      .slice(0, 6)
-      .map((f: YtDlpFormat) => {
-        const hasVideo = f.vcodec && f.vcodec !== "none";
-        const height = f.height || 0;
-
-        let quality = "";
-        if (hasVideo) {
-          if (height >= 2160) quality = "4K (2160p)";
-          else if (height >= 1440) quality = "1440p (2K)";
-          else if (height >= 1080) quality = "1080p (Full HD)";
-          else if (height >= 720) quality = "720p (HD)";
-          else if (height >= 480) quality = "480p";
-          else if (height >= 360) quality = "360p";
-          else quality = f.format_note || `${height}p`;
-        } else {
-          quality = f.abr ? `Audio ${Math.round(f.abr)}kbps` : "Audio";
-        }
-
-        return {
-          format_id: f.format_id,
-          ext: f.ext,
-          resolution: f.resolution || (height ? `${height}p` : "audio"),
-          filesize: f.filesize || f.filesize_approx,
-          url: f.url,
-          quality,
-        };
+  // Try each Cobalt instance
+  for (const instance of COBALT_INSTANCES) {
+    try {
+      const response = await fetch(instance, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url,
+          videoQuality: "1080",
+          audioFormat: "mp3",
+          filenameStyle: "pretty",
+        }),
+        signal: AbortSignal.timeout(15000),
       });
 
-    return NextResponse.json({
-      title: info.title || "Video",
-      thumbnail: info.thumbnail || "",
-      duration: formatDuration(info.duration),
-      platform: detectPlatform(url),
-      formats,
-    });
-  } catch (err) {
-    const error = err as Error;
-    const msg = error.message || "";
+      if (!response.ok) continue;
 
-    if (msg.includes("Private") || msg.includes("private")) {
-      return NextResponse.json({ error: "Bu video yopiq (private). Faqat ochiq videolarni yuklab olish mumkin." }, { status: 400 });
-    }
-    if (msg.includes("Unsupported") || msg.includes("unsupported")) {
-      return NextResponse.json({ error: "Bu platforma qo'llab-quvvatlanmaydi." }, { status: 400 });
-    }
-    if (msg.includes("404") || msg.includes("not found")) {
-      return NextResponse.json({ error: "Video topilmadi. Havola noto'g'ri bo'lishi mumkin." }, { status: 404 });
-    }
+      const data = await response.json();
 
-    return NextResponse.json(
-      { error: "Videoni qayta ishlashda xato yuz berdi. Iltimos, qaytadan urinib ko'ring." },
-      { status: 500 }
-    );
+      // Cobalt returns status: redirect | stream | picker | error
+      if (data.status === "error" || !data.status) continue;
+
+      const results = [];
+
+      if (data.status === "redirect" || data.status === "stream") {
+        // Single video
+        results.push({
+          url: data.url,
+          quality: "Video (En yaxshi sifat)",
+          ext: "mp4",
+          type: "video",
+        });
+
+        // Also try to get audio
+        try {
+          const audioRes = await fetch(instance, {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({ url, downloadMode: "audio", audioFormat: "mp3" }),
+            signal: AbortSignal.timeout(10000),
+          });
+          if (audioRes.ok) {
+            const audioData = await audioRes.json();
+            if ((audioData.status === "redirect" || audioData.status === "stream") && audioData.url) {
+              results.push({
+                url: audioData.url,
+                quality: "Faqat audio (MP3)",
+                ext: "mp3",
+                type: "audio",
+              });
+            }
+          }
+        } catch {
+          // Audio optional, ignore errors
+        }
+
+        return NextResponse.json({
+          results,
+          title: extractTitle(url),
+          thumbnail: "",
+        });
+      }
+
+      if (data.status === "picker" && Array.isArray(data.picker)) {
+        // Multiple items (e.g. Instagram carousel)
+        for (const item of data.picker.slice(0, 6)) {
+          if (item.url) {
+            results.push({
+              url: item.url,
+              quality: item.type === "photo" ? "Rasm" : "Video",
+              ext: item.type === "photo" ? "jpg" : "mp4",
+              type: item.type === "photo" ? "video" : "video",
+            });
+          }
+        }
+        if (results.length > 0) {
+          return NextResponse.json({ results, title: extractTitle(url), thumbnail: "" });
+        }
+      }
+    } catch {
+      continue;
+    }
   }
+
+  // Fallback error
+  return NextResponse.json(
+    {
+      error:
+        "Video yuklab bo'lmadi. Sabablari:\n• Havola noto'g'ri\n• Video yopiq (private)\n• Platforma qo'llab-quvvatlanmaydi\n\nYana bir marta urinib ko'ring.",
+    },
+    { status: 422 }
+  );
 }
 
-function getDemoResponse(url: string) {
-  const platform = detectPlatform(url);
-  return {
-    title: `${platform} Video — Demo`,
-    thumbnail: "",
-    duration: "3:45",
-    platform,
-    formats: [
-      { format_id: "1080", ext: "mp4", resolution: "1080p", filesize: 52428800, url: "#", quality: "1080p (Full HD)" },
-      { format_id: "720", ext: "mp4", resolution: "720p", filesize: 26214400, url: "#", quality: "720p (HD)" },
-      { format_id: "480", ext: "mp4", resolution: "480p", filesize: 10485760, url: "#", quality: "480p" },
-      { format_id: "audio", ext: "mp3", resolution: "audio", filesize: 5242880, url: "#", quality: "Audio 128kbps" },
-    ],
-    _demo: true,
-  };
+function extractTitle(url: string): string {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace("www.", "").replace("m.", "");
+    const map: Record<string, string> = {
+      "instagram.com": "Instagram Video",
+      "tiktok.com": "TikTok Video",
+      "youtube.com": "YouTube Video",
+      "youtu.be": "YouTube Video",
+      "facebook.com": "Facebook Video",
+      "twitter.com": "Twitter Video",
+      "x.com": "Twitter/X Video",
+      "vimeo.com": "Vimeo Video",
+    };
+    return map[host] || "Video";
+  } catch {
+    return "Video";
+  }
 }
