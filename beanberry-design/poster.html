@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:Italiana;src:url(Italiana-Regular.ttf)}
+@font-face{font-family:ISerif;src:url(InstrumentSerif-Regular.ttf)}
+@font-face{font-family:ISerif;font-style:italic;src:url(InstrumentSerif-Italic.ttf)}
+@font-face{font-family:ISans;src:url(InstrumentSans-Regular.ttf)}
+@font-face{font-family:ISans;font-weight:700;src:url(InstrumentSans-Bold.ttf)}
+:root{
+  --cream:#F4EEE5; --paper:#FBF8F3; --brown:#5E3121; --cocoa:#8A5A44; --muted:#A89383; --line:#DCCFC0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;background:var(--cream)}
+.poster{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--cream);color:var(--brown);font-family:ISans}
+/* subtle grain */
+.poster::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .32  0 0 0 0 .22  0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+.top{position:absolute;top:250px;left:90px;right:90px;display:flex;justify-content:space-between;align-items:center;
+  font-size:22px;letter-spacing:.32em;text-transform:uppercase;color:var(--cocoa)}
+.top .mark{display:flex;align-items:center;gap:14px;font-weight:700;color:var(--brown)}
+.bean{width:34px;height:44px;border-radius:50%;background:var(--brown);position:relative;transform:rotate(-24deg)}
+.bean::after{content:"";position:absolute;left:50%;top:5px;bottom:5px;width:4px;margin-left:-2px;border-radius:4px;
+  background:var(--cream);transform:rotate(12deg)}
+.rule{position:absolute;top:304px;left:90px;right:90px;height:1px;background:var(--line)}
+
+h1{position:absolute;top:345px;left:0;right:0;text-align:center;font-family:ISerif;font-weight:400;
+  font-size:150px;line-height:.9;letter-spacing:-.02em;color:var(--brown)}
+h1 em{font-style:italic;color:var(--cocoa)}
+
+.addr{position:absolute;top:655px;left:0;right:0;text-align:center;font-size:33px;line-height:1.42;color:#4A2A1D}
+.addr small{display:block;margin-top:14px;font-size:20px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+
+.map{position:absolute;top:850px;left:90px;width:900px;height:760px;border-radius:44px;overflow:hidden;background:#EBE2D4;
+  box-shadow:0 30px 60px -30px rgba(94,49,33,.35), 0 0 0 1px rgba(94,49,33,.06)}
+.map svg{display:block}
+
+.foot{position:absolute;top:1662px;left:90px;right:90px;display:flex;justify-content:space-between;align-items:flex-end}
+.foot .tag{font-family:Italiana;font-size:50px;line-height:1.02;text-transform:uppercase;color:var(--brown);letter-spacing:.02em}
+.foot .meta{text-align:right;font-size:21px;line-height:1.6;letter-spacing:.18em;text-transform:uppercase;color:var(--cocoa)}
+.foot .meta b{color:var(--brown)}
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <div class="top">
+    <div class="mark"><span class="bean"></span>Beanberry</div>
+    <div>Location</div>
+  </div>
+  <div class="rule"></div>
+
+  <h1>Where<br>are <em>we?</em></h1>
+
+  <div class="addr">
+    Mirzo Ulugbek District,<br>
+    Buyuk Ipak Yuli Residential Area, 1B
+    <small>Tashkent · Hamid Olimjon St</small>
+  </div>
+
+  <div class="map">
+    <svg width="900" height="760" viewBox="0 0 900 760" xmlns="http://www.w3.org/2000/svg" font-family="ISans">
+      <defs>
+        <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="10" height="10" fill="#E3D8C7"/><line x1="0" y1="0" x2="0" y2="10" stroke="#DACDBA" stroke-width="3"/>
+        </pattern>
+        <radialGradient id="glow"><stop offset="0" stop-color="#5E3121" stop-opacity=".22"/><stop offset="1" stop-color="#5E3121" stop-opacity="0"/></radialGradient>
+        <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#5E3121" flood-opacity=".25"/></filter>
+      </defs>
+
+      <rect width="900" height="760" fill="#EBE2D4"/>
+
+      <!-- building blocks -->
+      <g fill="#E2D6C4">
+        <path d="M0 0 H470 L455 150 C380 175 320 210 290 270 L0 300 Z" fill="url(#hatch)"/>
+        <path d="M0 340 L265 315 C300 360 330 400 340 430 L0 450 Z"/>
+        <path d="M300 300 C340 250 400 210 450 195 L435 400 L360 410 C345 370 325 335 300 300 Z"/>
+        <path d="M545 0 H900 V150 L530 135 Z"/>
+        <path d="M528 180 L900 195 V360 L515 350 Z"/>
+        <path d="M512 395 L900 405 V505 L505 500 Z"/>
+        <path d="M0 640 L455 625 L440 760 H0 Z"/>
+        <path d="M520 625 L900 640 V720 L515 712 Z"/>
+      </g>
+
+      <!-- parks -->
+      <g fill="#CFD3B6">
+        <path d="M600 160 C680 150 760 175 800 230 C760 270 660 270 610 240 Z"/>
+        <path d="M60 470 C140 455 230 470 260 500 L250 540 C180 548 90 545 50 530 Z"/>
+        <path d="M150 650 C230 640 330 650 360 690 L345 760 H120 C110 720 120 680 150 650 Z"/>
+        <path d="M560 660 C640 655 720 670 760 700 L755 760 H560 Z"/>
+        <circle cx="770" cy="470" r="34"/><circle cx="600" cy="455" r="22"/>
+      </g>
+
+      <!-- minor streets -->
+      <g fill="none" stroke="#FBF8F3" stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
+        <path d="M-20 320 L270 300 C320 260 380 200 520 160"/>
+        <path d="M-20 465 L345 440 C400 440 470 445 525 450"/>
+        <path d="M525 160 L900 175"/>
+        <path d="M515 375 L900 385"/>
+        <path d="M290 270 C330 330 360 380 375 440"/>
+        <path d="M510 700 L900 715"/>
+        <path d="M455 150 L440 420" stroke-width="12"/>
+      </g>
+
+      <!-- main road: Mahatma Gandhi St -->
+      <path d="M-20 560 L920 600" stroke="#FFFFFF" stroke-width="64" fill="none"/>
+      <path d="M-20 560 L920 600" stroke="#E4CDB0" stroke-width="2" stroke-dasharray="18 14" fill="none"/>
+
+      <!-- Hamid Olimjon St -->
+      <path d="M560 -20 L505 780" stroke="#FFFFFF" stroke-width="40" fill="none"/>
+
+      <!-- crosswalks -->
+      <g stroke="#E6DACA" stroke-width="10" stroke-dasharray="4 6" fill="none">
+        <path d="M470 532 L560 536"/><path d="M462 632 L552 636"/>
+        <path d="M478 535 L470 630"/><path d="M552 538 L544 634"/>
+      </g>
+
+      <!-- street labels -->
+      <g fill="#A89383" font-size="15" letter-spacing="3.5" font-weight="700">
+        <text transform="translate(598 330) rotate(-86)">HAMID OLIMJON ST</text>
+        <text transform="translate(640 600) rotate(2.4)">MAHATMA GANDHI ST</text>
+      </g>
+
+      <!-- POIs -->
+      <g font-size="19" fill="#7A6152">
+        <g><circle cx="150" cy="105" r="7" fill="#B9A491"/><text x="166" y="111">Talent Academy</text></g>
+        <g><circle cx="330" cy="382" r="7" fill="#B9A491"/><text x="316" y="388" text-anchor="end">Breadly</text></g>
+        <g><circle cx="680" cy="300" r="7" fill="#B9A491"/><text x="696" y="306">The Mind</text></g>
+        <g><circle cx="650" cy="90" r="7" fill="#B9A491"/><text x="666" y="96">Santander</text></g>
+        <g><circle cx="610" cy="485" r="7" fill="#B9A491"/><text x="626" y="491">Coffee Way</text></g>
+        <g><circle cx="50" cy="395" r="7" fill="#B9A491"/><text x="66" y="401">Museum</text></g>
+        <g><circle cx="270" cy="680" r="7" fill="#B9A491"/><text x="286" y="686">Ipak Yuli Bank</text></g>
+        <g><circle cx="640" cy="672" r="7" fill="#B9A491"/><text x="656" y="678">ChayKof</text></g>
+      </g>
+
+      <!-- Beanberry pin -->
+      <circle cx="420" cy="410" r="120" fill="url(#glow)"/>
+      <circle cx="420" cy="410" r="62" fill="none" stroke="#5E3121" stroke-opacity=".18" stroke-width="2"/>
+      <circle cx="420" cy="410" r="12" fill="#5E3121"/>
+      <g filter="url(#sh)">
+        <path d="M420 400 C396 372 368 352 368 318 A52 52 0 1 1 472 318 C472 352 444 372 420 400 Z" fill="#5E3121"/>
+      </g>
+      <!-- cup icon -->
+      <g fill="none" stroke="#F4EEE5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M401 304 H433 V322 A14 14 0 0 1 419 336 H415 A14 14 0 0 1 401 322 Z"/>
+        <path d="M433 309 H438 A7 7 0 0 1 438 323 H433"/>
+        <path d="M410 296 C408 292 412 290 410 286"/><path d="M420 296 C418 292 422 290 420 286"/>
+      </g>
+
+      <!-- label card -->
+      <path d="M265 267 L380 330" stroke="#5E3121" stroke-opacity=".35" stroke-width="2" stroke-dasharray="4 6" fill="none"/>
+      <g filter="url(#sh)">
+        <rect x="140" y="175" width="250" height="92" rx="22" fill="#FBF8F3"/>
+      </g>
+      <text x="164" y="215" font-family="ISerif" font-size="36" fill="#5E3121">Beanberry</text>
+      <text x="164" y="248" font-size="17" fill="#8A5A44" letter-spacing="1.5">★ 4.9 · COFFEE HOUSE</text>
+
+      <!-- compass -->
+      <g transform="translate(838 62)">
+        <circle r="30" fill="#FBF8F3" fill-opacity=".9"/>
+        <path d="M0 -18 L8 6 L0 2 L-8 6 Z" fill="#5E3121"/>
+        <text y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#5E3121" letter-spacing="1">N</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="foot">
+    <div class="tag">Come for coffee,<br>stay for the mood.</div>
+    <div class="meta">Yandex Maps<br><b>“Beanberry”</b></div>
+  </div>
+</div>
+</body>
+</html>
