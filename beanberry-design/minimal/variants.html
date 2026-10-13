@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#888}
+.s{position:relative;width:1080px;height:1920px;overflow:hidden;
+  font-family:"SF Pro Display","Inter Display",-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;font-feature-settings:"ss01","tnum"}
+.w{background:#FFFFFF;color:#0A0A0A}
+.b{background:#0A0A0A;color:#F5F5F5}
+.l{font-weight:300}.r{font-weight:400}.sb{font-weight:600}
+.lab{font-size:30px;font-weight:400;letter-spacing:-.005em}
+.dim{opacity:.45}
+.abs{position:absolute}
+.disp{letter-spacing:-.035em;line-height:.98}
+</style>
+</head>
+<body>
+
+<!-- 01 · white · "Closed for Holiday" style -->
+<section class="s w" id="v1">
+  <div class="abs lab" style="top:250px;left:90px">(Location)</div>
+  <div class="abs lab dim" style="top:250px;right:90px">(Tashkent)</div>
+  <div class="abs" style="left:90px;right:90px;bottom:300px">
+    <div class="sb disp" style="font-size:150px">Where<br>are we?</div>
+    <div class="l" style="font-size:44px;line-height:1.3;margin-top:56px;letter-spacing:-.01em">
+      Mirzo Ulugbek District,<br>Buyuk Ipak Yuli<br>Residential Area, 1B
+    </div>
+  </div>
+</section>
+
+<!-- 02 · black · address-first -->
+<section class="s b" id="v2">
+  <div class="abs lab" style="top:250px;left:90px">(Beanberry)</div>
+  <div class="abs lab dim" style="top:250px;right:90px">(01)</div>
+  <div class="abs" style="left:90px;right:90px;top:640px">
+    <div class="l disp" style="font-size:104px;line-height:1.04">Mirzo Ulugbek<br>District,</div>
+    <div class="r disp" style="font-size:104px;line-height:1.04;margin-top:10px">Buyuk Ipak Yuli</div>
+    <div class="sb disp" style="font-size:104px;line-height:1.04;margin-top:10px">Residential<br>Area, 1B</div>
+  </div>
+  <div class="abs lab dim" style="left:90px;bottom:300px">(Coffee &amp; Dessert)</div>
+</section>
+
+<!-- 03 · white · name top, address bottom-right -->
+<section class="s w" id="v3">
+  <div class="abs lab dim" style="top:250px;left:90px">(Find us)</div>
+  <div class="abs sb disp" style="top:310px;left:84px;font-size:178px">Beanberry</div>
+  <div class="abs" style="right:90px;bottom:300px;text-align:right">
+    <div class="lab dim" style="margin-bottom:28px">(Address)</div>
+    <div class="r" style="font-size:46px;line-height:1.3;letter-spacing:-.012em">
+      Mirzo Ulugbek District<br>Buyuk Ipak Yuli<br>Residential Area, 1B<br><span class="l dim">Tashkent, Uzbekistan</span>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · black · label / value index -->
+<section class="s b" id="v4">
+  <div class="abs" style="top:250px;left:90px">
+    <div class="sb disp" style="font-size:120px">Beanberry</div>
+    <div class="l dim" style="font-size:40px;margin-top:22px;letter-spacing:-.01em">Location</div>
+  </div>
+  <div class="abs" style="left:90px;right:90px;bottom:300px;display:grid;grid-template-columns:260px 1fr;row-gap:52px;align-items:baseline">
+    <div class="lab dim">(City)</div>         <div class="r" style="font-size:52px;letter-spacing:-.015em">Tashkent</div>
+    <div class="lab dim">(District)</div>     <div class="r" style="font-size:52px;letter-spacing:-.015em">Mirzo Ulugbek</div>
+    <div class="lab dim">(Area)</div>         <div class="r" style="font-size:52px;letter-spacing:-.015em;line-height:1.15">Buyuk Ipak Yuli<br>Residential Area</div>
+    <div class="lab dim">(Building)</div>     <div class="sb" style="font-size:52px;letter-spacing:-.015em">1B</div>
+  </div>
+</section>
+
+<!-- 05 · white · oversized 1B -->
+<section class="s w" id="v5">
+  <div class="abs lab" style="top:250px;left:90px">(Beanberry)</div>
+  <div class="abs lab dim" style="top:250px;right:90px">(Address)</div>
+  <div class="abs l" style="left:62px;top:420px;font-size:620px;line-height:.8;letter-spacing:-.06em">1B</div>
+  <div class="abs" style="left:90px;right:90px;bottom:300px">
+    <div class="r" style="font-size:44px;line-height:1.32;letter-spacing:-.01em">
+      Buyuk Ipak Yuli Residential Area,<br>Mirzo Ulugbek District
+    </div>
+    <div class="sb" style="font-size:44px;margin-top:20px;letter-spacing:-.01em">Tashkent</div>
+  </div>
+</section>
+
+<!-- 06 · black · centered, quiet -->
+<section class="s b" id="v6">
+  <div class="abs lab dim" style="top:250px;left:0;right:0;text-align:center">(Location)</div>
+  <div class="abs" style="left:0;right:0;top:50%;transform:translateY(-50%);text-align:center">
+    <div class="sb disp" style="font-size:132px">Beanberry</div>
+    <div class="l" style="font-size:42px;line-height:1.38;margin-top:60px;letter-spacing:-.01em">
+      Mirzo Ulugbek District<br>Buyuk Ipak Yuli Residential Area<br>1B, Tashkent
+    </div>
+  </div>
+  <div class="abs lab dim" style="bottom:300px;left:0;right:0;text-align:center">(See you there)</div>
+</section>
+
+</body>
+</html>
