@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Hot Stone — green stories</title>
+<style>
+@font-face{font-family:"IS";src:url("../fonts/InstrumentSerif-Regular.ttf");}
+@font-face{font-family:"IS";font-style:italic;src:url("../fonts/InstrumentSerif-Italic.ttf");}
+@font-face{font-family:"ISans";src:url("../fonts/InstrumentSans-Regular.ttf");font-weight:400;}
+@font-face{font-family:"ISans";src:url("../fonts/InstrumentSans-Bold.ttf");font-weight:700;}
+:root{--green:#0c2a1c;--green2:#12382a;--ink:#f4efe4;--mute:rgba(244,239,228,.62);--line:rgba(244,239,228,.38);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;}
+.story{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--green);color:var(--ink);font-family:"ISans",sans-serif;margin:0 auto 40px}
+/* subtle grain / topographic rings, echoing the reference background */
+.story::before{content:"";position:absolute;inset:0;
+  background:
+   repeating-radial-gradient(ellipse 900px 1100px at 78% 24%,rgba(255,255,255,.028) 0 2px,transparent 2px 26px),
+   repeating-radial-gradient(ellipse 1100px 800px at 12% 82%,rgba(255,255,255,.022) 0 2px,transparent 2px 30px),
+   radial-gradient(ellipse at 50% 30%,var(--green2) 0,var(--green) 70%);}
+.story::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.35) 100%)}
+.in{position:absolute;left:120px;right:120px;z-index:2}
+.logo{position:absolute;z-index:2;left:50%;top:262px;width:150px;transform:translateX(-50%);}
+.kicker{font-family:"IS",serif;font-size:84px;letter-spacing:-.02em;text-align:center;position:absolute;left:0;right:0;top:610px;z-index:2}
+.h1{font-family:"IS",serif;font-size:156px;line-height:.98;letter-spacing:-.035em}
+.h2{font-family:"IS",serif;font-size:104px;line-height:1;letter-spacing:-.03em}
+.rule{height:2px;background:var(--line);}
+.list{list-style:none}
+.list li{display:flex;gap:34px;align-items:flex-start;font-size:46px;line-height:1.3;margin-bottom:64px;color:var(--ink)}
+.list li:last-child{margin-bottom:0}
+.list .chk{flex:none;width:34px;margin-top:6px}
+.list .uz{display:block}
+.list .en{display:block;color:var(--mute);font-size:38px;margin-top:8px}
+.lbl{font-size:40px;color:var(--mute);letter-spacing:.01em}
+.price{word-spacing:.12em;font-family:"IS",serif;font-size:176px;letter-spacing:-.04em;line-height:1;margin-top:14px}
+.note{font-size:48px;line-height:1.4}
+.note small{display:block;color:var(--mute);font-size:34px;margin-top:14px;line-height:1.35}
+.pg{position:absolute;z-index:2;right:120px;bottom:360px;font-size:28px;letter-spacing:.2em;color:var(--mute)}
+</style>
+</head>
+<body>
+
+<!-- 1 · cover -->
+<section class="story" id="s1">
+  <img class="logo" src="../assets/logo.png" alt="Silver Rain Bali">
+  <div class="kicker">Massage</div>
+  <div class="in" style="top:840px">
+    <div class="h1">Hot Stone<br>Massage</div>
+    <div class="rule" style="margin:70px 0 56px"></div>
+    <ul class="list">
+      <li><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="#f4efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="uz">Isitilgan vulqon toshlari bilan massaj</span><span class="en">Heated volcanic stone massage</span></span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 2 · what it is -->
+<section class="story" id="s2">
+  <img class="logo" src="../assets/logo.png" alt="Silver Rain Bali">
+  <div class="kicker">Hot Stone</div>
+  <div class="in" style="top:830px">
+    <div class="rule"></div>
+    <ul class="list" style="margin:70px 0">
+      <li><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="#f4efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="uz">Isitilgan vulqon toshlari</span><span class="en">Heated volcanic stones</span></span></li>
+      <li><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="#f4efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="uz">Issiqlik mushaklarni chuqur bo'shashtiradi</span><span class="en">Warmth deeply relaxes the muscles</span></span></li>
+      <li><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="#f4efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="uz">Silver Rain Bali massajlari orasida eng premium</span><span class="en">Our most premium massage</span></span></li>
+    </ul>
+    <div class="rule"></div>
+  </div>
+</section>
+
+<!-- 3 · who it's for -->
+<section class="story" id="s3">
+  <img class="logo" src="../assets/logo.png" alt="Silver Rain Bali">
+  <div class="kicker">Kimga mos</div>
+  <div class="in" style="top:830px">
+    <div class="rule"></div>
+    <ul class="list" style="margin:70px 0">
+      <li><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="#f4efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="uz">Sovuq mavsumda</span><span class="en">For the cold season</span></span></li>
+      <li><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="#f4efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="uz">Kuchli mushak tarangligi borlarga</span><span class="en">For strong muscle tension</span></span></li>
+      <li><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="#f4efe4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><span class="uz">Chuqur bo'shashishni xohlaganlarga</span><span class="en">For deep relaxation</span></span></li>
+    </ul>
+    <div class="rule"></div>
+  </div>
+</section>
+
+<!-- 4 · price -->
+<section class="story" id="s4">
+  <img class="logo" src="../assets/logo.png" alt="Silver Rain Bali">
+  <div class="kicker">Hot Stone</div>
+  <div class="in" style="top:830px">
+    <div class="rule"></div>
+    <div style="margin:80px 0 20px">
+      <div class="lbl">60 daq / min</div>
+      <div class="price">850&nbsp;000</div>
+    </div>
+    <div style="margin:96px 0 80px">
+      <div class="lbl">90 daq / min</div>
+      <div class="price">1&nbsp;100&nbsp;000</div>
+    </div>
+    <div class="rule"></div>
+  </div>
+</section>
+
+<!-- 5 · note -->
+<section class="story" id="s5">
+  <img class="logo" src="../assets/logo.png" alt="Silver Rain Bali">
+  <div class="kicker">Eslatma</div>
+  <div class="in" style="top:830px">
+    <div class="rule"></div>
+    <div class="note" style="margin:70px 0">
+      Homiladorlik, yuqori qon bosimi va varikoz holatida odatda tavsiya qilinmaydi.
+      <small>Usually not recommended during pregnancy, with high blood pressure or varicose veins.</small>
+    </div>
+    <div class="rule"></div>
+    <div class="h2" style="margin-top:90px">Yozilish uchun<br><i>xabar yuboring</i></div>
+    <div class="lbl" style="margin-top:26px">Message us to book</div>
+  </div>
+</section>
+
+</body>
+</html>
