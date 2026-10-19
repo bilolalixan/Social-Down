@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Hot Stone — photo stories</title>
+<style>
+:root{--ink:#fbf7f0;--mute:rgba(251,247,240,.78)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111}
+.story{position:relative;width:1080px;height:1920px;overflow:hidden;margin:0 auto 40px;color:var(--ink);
+  font-family:"Inter Display","Inter","Helvetica Neue",Arial,sans-serif;background:#1b1511 center/cover no-repeat}
+/* legibility: warm dark gradient at the bottom, like the reference */
+.story::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,.28) 0,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 45%,rgba(14,8,4,.78) 100%)}
+.t{position:absolute;z-index:2;left:130px;bottom:560px;font-size:168px;font-weight:500;letter-spacing:-.055em;line-height:.9}
+.sub{position:absolute;z-index:2;left:134px;bottom:500px;font-size:34px;letter-spacing:.01em}
+.p{position:absolute;z-index:2;left:134px;bottom:262px;width:520px;font-size:33px;line-height:1.34;color:var(--mute)}
+.p p+p{margin-top:36px}
+.tag{position:absolute;z-index:2;right:120px;bottom:668px;font-size:28px;line-height:1.15;letter-spacing:.04em;font-weight:500;text-transform:uppercase;text-align:left}
+.meta{position:absolute;z-index:2;right:120px;bottom:400px;text-align:left;white-space:nowrap}
+.meta .big{font-size:50px;letter-spacing:.06em;font-weight:400}
+.meta .row{font-size:30px;color:var(--mute);margin-top:12px;letter-spacing:.04em}
+.by{position:absolute;z-index:2;right:120px;bottom:262px;font-size:26px;letter-spacing:.05em;color:var(--mute)}
+.price .big{font-size:56px}
+</style>
+</head>
+<body>
+
+<!-- 1 -->
+<section class="story" style="background-image:url('img/stonesback.jpg');background-position:center 40%">
+  <div class="t">hot stone.</div>
+  <div class="sub">/ горячие камни /</div>
+  <div class="p"><p>Массаж нагретыми вулканическими камнями.</p><p>Тепло глубоко расслабляет мышцы.</p></div>
+  <div class="tag">Silver Rain<br>Bali</div>
+  <div class="meta"><div class="big">60 / 90</div><div class="row">минут</div></div>
+  <div class="by">silver rain bali</div>
+</section>
+
+<!-- 2 -->
+<section class="story" style="background-image:url('img/candlestones.jpg');background-position:center 45%">
+  <div class="t">warm.</div>
+  <div class="sub">/ тепло /</div>
+  <div class="p"><p>Камни нагреваются, тепло передаётся телу.</p><p>Мышцы расслабляются сами.</p></div>
+  <div class="tag">Silver Rain<br>Bali</div>
+  <div class="meta"><div class="big">hot stone</div><div class="row">massage</div></div>
+  <div class="by">silver rain bali</div>
+</section>
+
+<!-- 3 -->
+<section class="story" style="background-image:url('img/candledark.jpg');background-size:auto 2170px;background-position:center -250px">
+  <div class="t">cold<br>season.</div>
+  <div class="sub" style="bottom:500px">/ холодный сезон /</div>
+  <div class="p"><p>Лучший выбор для холодных дней.</p><p>Согрев и расслабление в одном.</p></div>
+  <div class="tag">Silver Rain<br>Bali</div>
+  <div class="meta"><div class="big">hot stone</div><div class="row">massage</div></div>
+  <div class="by">silver rain bali</div>
+</section>
+
+<!-- 4 -->
+<section class="story" style="background-image:url('img/backmassage.jpg');background-position:center 40%">
+  <div class="t">tension.</div>
+  <div class="sub">/ напряжение /</div>
+  <div class="p"><p>Подходит при сильном мышечном напряжении.</p><p>Тепло смягчает напряжение.</p></div>
+  <div class="tag">Silver Rain<br>Bali</div>
+  <div class="meta"><div class="big">hot stone</div><div class="row">massage</div></div>
+  <div class="by">silver rain bali</div>
+</section>
+
+<!-- 5 -->
+<section class="story" style="background-image:url('img/basalt.jpg');background-position:center 50%">
+  <div class="t">book.</div>
+  <div class="sub">/ запись /</div>
+  <div class="p"><p>Обычно не рекомендуется при беременности, повышенном давлении и варикозе.</p></div>
+  <div class="tag" style="bottom:830px">Silver Rain<br>Bali</div>
+  <div class="meta price"><div class="big">850&nbsp;000</div><div class="row">60 минут</div><div class="big" style="margin-top:34px">1&nbsp;100&nbsp;000</div><div class="row">90 минут</div></div>
+  <div class="by">silver rain bali</div>
+</section>
+
+</body>
+</html>
