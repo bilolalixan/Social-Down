@@ -1,0 +1,42 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:IS;src:url(fonts/InstrumentSerif-Regular.ttf)}
+@font-face{font-family:IS;font-style:italic;src:url(fonts/InstrumentSerif-Italic.ttf)}
+@font-face{font-family:CP;src:url(fonts/CrimsonPro-Regular.ttf)}
+@font-face{font-family:GM;src:url(fonts/GeistMono-Regular.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a1a}
+.story{position:relative;width:1080px;height:1920px;overflow:hidden;background:#1a1a1a;color:#F2EEE6}
+.lab{font-family:GM;font-size:22px;letter-spacing:.22em;text-transform:uppercase;display:flex;align-items:center;gap:16px;color:#E9E4DA}
+.lab i{width:14px;height:14px;background:#F2EEE6;display:block}
+.top{position:absolute;top:250px;left:72px;right:72px;display:flex;justify-content:space-between}
+.top .dim{opacity:.5}
+.card{position:absolute;left:72px;right:72px;top:330px;height:900px;border-radius:44px;overflow:hidden;
+  background:url(bamboo-blur.jpg) center 40%/cover}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 55%,rgba(0,0,0,.45) 100%)}
+.card .lab{position:absolute;top:44px;left:44px;z-index:2}
+.card .q{position:absolute;left:44px;right:44px;bottom:44px;z-index:2;font-family:IS;font-size:46px;line-height:1.12;color:#FBF8F2}
+h1{position:absolute;top:1290px;left:72px;right:72px;font-family:IS;font-weight:400;font-size:84px;line-height:1;letter-spacing:-.01em}
+h1 em{font-style:italic;color:#CFC8BA}
+.body{position:absolute;top:1410px;left:72px;right:90px;font-family:CP;font-weight:400;font-size:36px;line-height:1.42;color:#D8D2C6}
+.lt{background:#F3EFE8;color:#1E1C19}
+.lt .top .lab{color:#2A2723}.lt .top .lab i{background:#2A2723}
+.lt h1 em{color:#8A8275}.lt .body{color:#4A453E}
+</style></head><body>
+<section class="story">
+  <div class="top"><div class="lab"><i></i>Silver Rain</div><div class="lab dim">Est. 2011</div></div>
+  <div class="card">
+    <div class="lab"><i></i>Bali · Tashkent</div>
+    <div class="q">“Не имитация,<br>а подлинная техника”</div>
+  </div>
+  <h1>История <em>Silver Rain</em></h1>
+  <div class="body">В 2011 году в Ташкенте ещё мало кто знал, что такое настоящий балийский ритуал. Мы стали первым спа в&nbsp;Узбекистане, который привёз эту традицию прямо с&nbsp;Бали. Не&nbsp;имитация, а подлинная техника.</div>
+</section>
+<section class="story lt">
+  <div class="top"><div class="lab"><i></i>Silver Rain</div><div class="lab dim">Est. 2011</div></div>
+  <div class="card">
+    <div class="lab"><i></i>Bali · Tashkent</div>
+    <div class="q">“Не имитация,<br>а подлинная техника”</div>
+  </div>
+  <h1>История <em>Silver Rain</em></h1>
+  <div class="body">В 2011 году в Ташкенте ещё мало кто знал, что такое настоящий балийский ритуал. Мы стали первым спа в&nbsp;Узбекистане, который привёз эту традицию прямо с&nbsp;Бали. Не&nbsp;имитация, а подлинная техника.</div>
+</section></body></html>
