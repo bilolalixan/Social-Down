@@ -2,26 +2,23 @@
 # [g]...[/g] marks the grey (secondary) part of a sentence.
 USER = "@bilolalixan"
 S = [
- "Fikringiz tumanli bo‘lsa, [g]strategiyangiz ham tumanli bo‘ladi.[/g]",
- "Aniqlik — [g]sizning eng katta ustunligingiz.[/g]",
- "Muhim qarorlarda asosiy muammo — “tuman”: [g]noaniq maqsadlar, bir&#8209;biriga zid fikrlar, cheksiz yig‘ilishlar va hech qanday natija yo‘q.[/g]",
- "Aniq fikrlaydiganlar bu tumanni yorib o‘tadi. [g]Ular tartibsizlikka tartib beradi va ishni oldinga siljitadigan qarorlar qabul qiladi.[/g]",
- "Mana buni 7 bosqichda qanday qilish mumkin:",
- ("Muammoni aniqlang", "Aniq belgilanmagan muammoni hal qilib bo‘lmaydi.",
-  ["So‘rang: biz aynan qanday muammoga duch kelyapmiz?", "Noaniq maqsadlarni aniq ziddiyatlarga aylantiring", "Muammoni boshqalar bilan sinovdan o‘tkazing"]),
- ("Kichik qismlarga bo‘ling", "Katta muammolar murakkablik ichida yashirinadi.",
-  ["“Muammolar daraxti” yoki “5 marta nega?” usulidan foydalaning", "Eng muhim qismlarni birinchi o‘ringa qo‘ying", "Asl sabablarni yuzaki belgilardan ajrating"]),
- ("Har bir qismni tahlil qiling", "Taxmin qilmang, dalilga tayaning.",
-  ["Ma’lumotlar, trendlar va xatti&#8209;harakatlarga qarang", "To‘siqlar, bo‘shliqlar va g‘ayrioddiy holatlarni toping", "So‘rang: buni nima harakatlantiryapti va nima o‘zgardi?"]),
- ("Insayt yarating", "Umumlashtirish faktlarni ma’noga aylantiradi.",
-  ["Har bir topilmadan keyin “Xo‘sh, bundan nima?” deb so‘rang", "Ko‘rinmaydigan cheklovlarni yuzaga chiqaring", "Nima qilish kerakligi haqida aniq nuqtai nazar shakllantiring"]),
- ("Hikoya tuzing", "Strategiya boshqalar tushunsagina foydali.",
-  ["Uni “muammo → katta g‘oya → harakat” ko‘rinishida tuzing", "Auditoriyangizga moslashtiring", "Sodda, tartibli va esda qoladigan qiling"]),
- ("Qaror qabul qiling", "Mukammal vaqtni kutmang.",
-  ["Nimadan voz kechayotganingizni aniq belgilang", "O‘zingiz uchun mantiqli mezonlar asosida tanlang", "Ishonch bilan qaror qiling"]),
- ("Dadil harakat qiling", "Ijrosiz fikrlash hech narsa emas.",
-  ["Tez va aniq yo‘naltirilgan tajribalardan boshlang", "Silliqlikdan ko‘ra o‘rganishni ustun qo‘ying", "Ishonch uyg‘otadigan, ko‘zga ko‘rinadigan g‘alabalar yarating", "O‘rganing va takomillashtiring"]),
- "Aniq fikrlash — bu super kuch. [g]Fikringizni tartibga soling, aniq gapiring va odamlarni harakatga undang.[/g]",
+ "Strategik fikrlash. [g]Murakkab muammolarni hal qilish, ishonarli gapirish va qat’iy harakat qilish uchun 7 bosqichli metod.[/g]",
+ "1–4-bosqichlar — fikrlash. [g]O‘z nuqtai nazaringiz va strategik qadamingizni qurasiz.[/g]",
+ ("Muammoni aniqlang", "Biz hal qilayotgan <i>haqiqiy</i> muammoni toping.",
+  ["Ziddiyatni toping: nima ishlamayapti va nega bu muhim", "Kerak bo‘lsa, muammoni qayta shakllantiring"], "Fikrlash"),
+ ("Kichik qismlarga bo‘ling", "Murakkab muammoni boshqariladigan qiling.",
+  ["Muammoni bo‘laklash uchun “muammolar daraxti”dan foydalaning", "Asl sababga yetish uchun “5 marta nega?” usulini qo‘llang"], "Fikrlash"),
+ ("Har bir qismni tahlil qiling", "Muammoni o‘rganing va dalil toping.",
+  ["80/20, trend tahlili, benchmark kabi vositalardan foydalaning", "Natijaga eng ko‘p ta’sir qiladigan narsani toping"], "Fikrlash"),
+ ("Insayt yarating", "Ma’lumotlaringizdan chuqurroq ma’no toping.",
+  ["“Xo‘sh, bundan nima?” degan savolga javob bering", "Nimasi kutilmagan va boshqacha ekanini toping", "O‘z nuqtai nazaringizni shakllantiring"], "Fikrlash"),
+ "5–7-bosqichlar — ta’sir qilish. [g]Ishonarli hikoya qilasiz va strategiyani hayotga tatbiq etasiz.[/g]",
+ ("Hikoya tuzing", "Javobni ishonarli hikoyaga aylantiring.",
+  ["Yaxshi hikoya muammo, katta g‘oya va harakatni tushuntiradi", "Sodda til va vizuallardan foydalaning"], "Ta’sir qilish"),
+ ("Qaror qabul qiling", "Nimadan voz kechayotganingizni bilib, tanlov qiling.",
+  ["Variantlarni aniq belgilang: har biri boshqasidan farq qilsin", "Baholash usulidan foydalaning"], "Ta’sir qilish"),
+ ("Dadil harakat qiling", "Aniq fikrlash faqat harakatga olib kelsa qadrli.",
+  ["Mukammallikdan ko‘ra tezlikni ustun qo‘ying", "Kichik tajribalardan boshlang", "O‘rganing va takomillashtiring"], "Ta’sir qilish"),
 ]
 CTA = ('<div class="t g" style="font-size:92px">Shu kabi foydali ma’lumotlar uchun</div>'
        '<div class="t" style="font-size:92px;margin-top:6px">sahifamga obuna bo‘ling.</div>'
@@ -41,9 +38,9 @@ step = 0
 for i, t in enumerate(S, 1):
     if isinstance(t, tuple):
         step += 1
-        ti, sub, bl = t
+        ti, sub, bl, grp = t
         lis = ''.join(f'<li>{x}</li>' for x in bl)
-        out.append(f'<section class="s" id="s{i}"><div><div class="no">{step:02d} / 07</div><div class="t" style="font-size:92px">{ti}</div><div class="st">{sub}</div><ul>{lis}</ul></div>{foot(i)}</section>')
+        out.append(f'<section class="s" id="s{i}"><div><div class="no">{step:02d} / 07 · {grp}</div><div class="t" style="font-size:92px">{ti}</div><div class="st">{sub}</div><ul>{lis}</ul></div>{foot(i)}</section>')
         continue
     body = t.replace('[g]', '<span class="g">').replace('[/g]', '</span>')
     out.append(f'<section class="s" id="s{i}"><div class="t" style="font-size:{size(t)}px">{body}</div>{foot(i)}</section>')
