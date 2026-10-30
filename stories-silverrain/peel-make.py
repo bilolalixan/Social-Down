@@ -1,5 +1,6 @@
 import sys
 img,out,num,title,desc,yes,no=sys.argv[1:8]
+tag=sys.argv[8] if len(sys.argv)>8 else ""
 s=open('story43.html').read().replace('peel1-blur.jpg',img)
 s=s.replace('</style>','''.pre{font-size:28px;font-weight:300;color:rgba(255,255,255,.75);margin-bottom:20px}
 .pd{margin-top:28px;font-size:34px;font-weight:300;line-height:1.38;color:rgba(255,255,255,.9);letter-spacing:-.01em}
@@ -9,12 +10,13 @@ s=s.replace('</style>','''.pre{font-size:28px;font-weight:300;color:rgba(255,255
 .pr{margin-top:28px;font-size:34px;font-weight:400}
 .pr span{color:rgba(255,255,255,.65);font-weight:300}
 </style>''')
+nor=f'<div><b>Не&nbsp;подойдёт</b><span>{no}</span></div>' if no else ''
 a=s.index('<div class="z txt">'); b=s.index('</section>')
 s=s[:a]+f'''<div class="z txt">
-    <div class="pre">Пилинг {num} / 04</div>
+    <div class="pre">Пилинг {num} / 04{(" · "+tag) if tag else ""}</div>
     <h1><b>{title}</b></h1>
     <div class="pd">{desc}</div>
-    <div class="yn"><div><b>Подойдёт</b><span>{yes}</span></div><div><b>Не&nbsp;подойдёт</b><span>{no}</span></div></div>
+    <div class="yn"><div><b>Подойдёт</b><span>{yes}</span></div>{nor}</div>
     <div class="pr"><span>40 мин ·</span> 650 000 сум</div>
   </div>
 '''+s[b:]
