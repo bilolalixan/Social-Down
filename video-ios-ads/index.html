@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=720,height=1280">
+<title>iOS Ads Video</title>
+<style>
+:root{--blue:#007AFF;--blueD:#0A84FF;--green:#34C759;--red:#FF3B30;--orange:#FF9500;--gray:#8E8E93;--bg:#F2F2F7}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:720px;height:1280px;overflow:hidden;background:#000}
+body{font-family:'Inter Display','Inter','Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.011em}
+#stage{position:absolute;left:0;top:0;width:390px;height:693.34px;overflow:hidden;transform:scale(1.846154);transform-origin:0 0}
+.a{position:absolute;transform-origin:50% 50%}
+.rel{position:relative;display:inline-block}
+.scene{position:absolute;left:0;top:0;width:390px;height:693.34px;overflow:hidden}
+.words{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;align-items:center;column-gap:.26em;row-gap:.04em;line-height:1.18;text-align:center}
+.app{display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.12),0 6px 16px rgba(0,0,0,.14)}
+.app svg{width:100%;height:100%}
+.card{background:#fff;border-radius:24px;box-shadow:0 0 0 .5px rgba(0,0,0,.04),0 2px 6px rgba(0,0,0,.04),0 12px 32px rgba(0,0,0,.07)}
+.glass{background:rgba(44,44,46,.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12),0 10px 40px rgba(0,0,0,.5)}
+.dk{background:#1C1C1E;border-radius:24px;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1),0 12px 40px rgba(0,0,0,.5)}
+.pill{border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:600}
+.bub{position:absolute;border-radius:19px;padding:9px 15px;font-size:17px;font-weight:400;line-height:1.25;display:flex;align-items:center;letter-spacing:-.015em}
+.bub.in{background:#262628;color:#fff}
+.bub.out{background:#007AFF;color:#fff}
+.bub.tail::before,.bub.tail::after{content:"";position:absolute;bottom:0;height:16px}
+.bub.in.tail::before{left:-5px;width:13px;background:#262628;border-bottom-right-radius:14px}
+.bub.in.tail::after{left:-8px;width:8px;background:#000;border-bottom-right-radius:10px}
+.bub.out.tail::before{right:-5px;width:13px;background:#007AFF;border-bottom-left-radius:14px}
+.bub.out.tail::after{right:-8px;width:8px;background:var(--bgc,#F2F2F7);border-bottom-left-radius:10px}
+.tn{font-variant-numeric:tabular-nums;font-feature-settings:'tnum'}
+svg{display:block}
+</style></head><body>
+<div id="stage"></div>
+<script>
+/* ============ ENGINE ============ */
+const stage=document.getElementById('stage');
+const SFX=[];const sfx=(t,n,a={})=>SFX.push(Object.assign({t,n},a));
+const EASE={lin:x=>x,out:x=>1-Math.pow(1-x,3),inout:x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,
+  spring:x=>x>=1?1:1-Math.exp(-7*x)*Math.cos(9*x),soft:x=>x>=1?1:1-Math.exp(-9*x)*Math.cos(5*x),in:x=>x*x*x};
+const reg=[],tracked=[],fns=[],scenes=[];
+function el(parent,cls,css,html){const d=document.createElement('div');d.className=(cls&&cls.includes('rel')?'':'a ')+(cls||'');d.style.cssText=css||'';if(html!=null)d.innerHTML=html;parent.appendChild(d);d._t={};return d}
+function at(d,cx,cy,w,h){d.style.left=(cx-w/2)+'px';d.style.top=(cy-(h||0)/2)+'px';d.style.width=w+'px';if(h)d.style.height=h+'px';return d}
+function tw(d,o){for(const k in o)d._t[k]=o[k];if(!d._tr){d._tr=1;tracked.push(d)}return d}
+function pop(d,t,dur=.55,from=.4){return tw(d,{s:[[t,from],[t+dur,1,'spring']],o:[[t,0],[t+.07,1,'lin']]})}
+function fadeIn(d,t,dur=.3,dy=0){const o={o:[[t,0],[t+dur,1,'out']]};if(dy)o.y=[[t,dy],[t+dur+.15,0,'out']];return tw(d,Object.assign({},d._t,o))}
+function fadeOut(d,t,dur=.25){const prev=d._t.o||[[0,1]];return tw(d,{o:prev.concat([[t,1],[t+dur,0,'out']])})}
+function val(k,t){if(t<=k[0][0])return k[0][1];for(let i=1;i<k.length;i++){if(t<k[i][0]){const a=k[i-1],b=k[i];return a[1]+(b[1]-a[1])*EASE[b[2]||'out']((t-a[0])/(b[0]-a[0]))}}return k[k.length-1][1]}
+const ramp=(t,a,b,v0,v1,e='out')=>t<=a?v0:t>=b?v1:v0+(v1-v0)*EASE[e]((t-a)/(b-a));
+function scene(a,b,bg,dy=0){const r=el(stage,'scene','background:'+bg);const g=el(r,'', 'left:0;top:'+dy+'px;width:390px;height:693.34px');
+  tw(r,{o:[[a-.18,0],[a+.12,1,'out']]});
+  tw(g,{s:[[a-.18,1.05],[a+.55,1,'out'],[b-.22,1],[b+.08,.94,'inout']],o:[[b-.22,1],[b+.06,0,'out']],b:[[b-.22,0],[b+.08,8,'out']]});
+  const S={r,g,a,b};scenes.push(S);return S}
+function words(p,str,cx,cy,w,size,color,times,o={}){
+  const c=el(p,'words',`font-size:${size}px;color:${color};font-weight:${o.wt||600};${o.css||''}`);at(c,cx,cy,w,o.h||size*3);
+  str.split(' ').forEach((wd,i)=>{const s=el(c,'rel','',wd);if(o.hl&&o.hl[i])s.style.cssText+=o.hl[i];const t=times[i];
+    tw(s,{o:[[t,0],[t+.28,1,'out']],y:[[t,size*.35],[t+.5,0,'out']],b:[[t,5],[t+.35,0,'out']]})});return c}
+function ticks(a,b,n,vol=.5){for(let i=0;i<n;i++){const u=i/(n-1);sfx(a+(b-a)*(1-Math.pow(1-u,1.6)),'tick',{v:vol*(.6+.4*u),p:1+u*.4})}}
+
+/* ============ ICONS ============ */
+const SV={
+ig:`<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#igG)"/><defs><radialGradient id="igG" cx=".3" cy="1.05" r="1.1"><stop offset="0" stop-color="#FFD66B"/><stop offset=".25" stop-color="#FD5949"/><stop offset=".6" stop-color="#D6249F"/><stop offset="1" stop-color="#4F5BD5"/></radialGradient></defs><rect x="22" y="22" width="56" height="56" rx="17" fill="none" stroke="#fff" stroke-width="6"/><circle cx="50" cy="50" r="13" fill="none" stroke="#fff" stroke-width="6"/><circle cx="67" cy="33" r="4" fill="#fff"/></svg>`,
+spa:`<svg viewBox="0 0 100 100"><defs><linearGradient id="spG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5BE585"/><stop offset="1" stop-color="#1FA2A6"/></linearGradient></defs><rect width="100" height="100" fill="url(#spG)"/><g fill="#fff"><path d="M50 20C63 38 63 58 50 72C37 58 37 38 50 20Z"/><path d="M26 36C42 40 50 54 48 72C32 68 24 54 26 36Z" opacity=".92"/><path d="M74 36C58 40 50 54 52 72C68 68 76 54 74 36Z" opacity=".92"/><path d="M18 52C32 54 44 64 48 78C32 80 20 70 18 52Z" opacity=".8"/><path d="M82 52C68 54 56 64 52 78C68 80 80 70 82 52Z" opacity=".8"/></g></svg>`,
+salon:`<svg viewBox="0 0 100 100"><defs><linearGradient id="saG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7AB6"/><stop offset="1" stop-color="#E0245E"/></linearGradient></defs><rect width="100" height="100" fill="url(#saG)"/><path fill="#fff" d="M46 18L55 42L79 50L55 58L46 82L37 58L13 50L37 42Z" transform="translate(4 0)"/><path fill="#fff" opacity=".9" d="M76 16L80 26L90 30L80 34L76 44L72 34L62 30L72 26Z"/></svg>`,
+clinic:`<svg viewBox="0 0 100 100"><defs><linearGradient id="clG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5AC8FA"/><stop offset="1" stop-color="#0A60FF"/></linearGradient></defs><rect width="100" height="100" fill="url(#clG)"/><rect x="41" y="20" width="18" height="60" rx="6" fill="#fff"/><rect x="20" y="41" width="60" height="18" rx="6" fill="#fff"/></svg>`,
+well:`<svg viewBox="0 0 100 100"><defs><linearGradient id="weG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB340"/><stop offset="1" stop-color="#FF3B5C"/></linearGradient></defs><rect width="100" height="100" fill="url(#weG)"/><path fill="#fff" d="M50 80C16 58 20 26 38 26C45 26 50 31 50 36C50 31 55 26 62 26C80 26 84 58 50 80Z"/></svg>`,
+person:`<svg viewBox="0 0 100 100"><circle cx="50" cy="36" r="17" fill="#fff"/><path d="M16 92C16 66 32 56 50 56C68 56 84 66 84 92Z" fill="#fff"/></svg>`,
+check:`<svg viewBox="0 0 100 100"><path d="M24 53L42 71L77 31" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+arrowDown:`<svg viewBox="0 0 100 100"><path d="M50 20V76M26 54L50 78L74 54" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+arrowUp:`<svg viewBox="0 0 100 100"><path d="M50 80V24M26 46L50 22L74 46" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+pin:`<svg viewBox="0 0 100 100"><path d="M50 10C32 10 20 24 20 40C20 62 50 92 50 92C50 92 80 62 80 40C80 24 68 10 50 10Z" fill="#FF3B30"/><circle cx="50" cy="40" r="12" fill="#fff"/></svg>`,
+bang:`<svg viewBox="0 0 100 100"><rect x="43" y="18" width="14" height="42" rx="7" fill="#fff"/><circle cx="50" cy="76" r="8" fill="#fff"/></svg>`,
+star:`<svg viewBox="0 0 100 100"><path fill="#fff" d="M50 8L61 38L92 50L61 62L50 92L39 62L8 50L39 38Z"/></svg>`,
+play:`<svg viewBox="0 0 100 100"><path fill="#fff" d="M38 28L74 50L38 72Z"/></svg>`,
+link:`<svg viewBox="0 0 100 100"><path d="M42 58L58 42M36 46L30 52C23 59 23 69 30 76C37 83 47 83 54 76L60 70M64 54L70 48C77 41 77 31 70 24C63 17 53 17 46 24L40 30" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/></svg>`
+};
+let UID=0;function uniq(svg){const u='_'+(UID++);return svg.replace(/id="(\w+)"/g,'id="$1'+u+'"').replace(/url\(#(\w+)\)/g,'url(#$1'+u+')')}
+function icon(p,kind,cx,cy,size){const d=el(p,'app','');at(d,cx,cy,size,size);d.style.borderRadius=(size*.2237)+'px';d.innerHTML=uniq(SV[kind]);return d}
+function glyph(p,kind,cx,cy,size,bg){const d=el(p,'pill','background:'+bg);at(d,cx,cy,size,size);d.innerHTML=`<div style="width:62%;height:62%">${SV[kind]}</div>`;return d}
+
+const G='#8A8A8E',GD='#98989D';
+const cx0=195;
+/* ============ S1  0 – 2.9 ============ */
+{const S=scene(0,2.9,'#F2F2F7',40);
+ const ig=icon(S.g,'ig',cx0,225,62);pop(ig,.05,.7,.2);sfx(.05,'pop');
+ const bd=el(S.g,'pill','background:#FF3B30;color:#fff;font-size:12px;font-weight:700;box-shadow:0 0 0 2px #F2F2F7');at(bd,cx0+27,225-27,20,20);bd.textContent='1';pop(bd,.55,.5,0);sfx(.55,'pop',{p:1.35});
+ const b=el(S.g,'bub out tail','left:88px;top:300px;width:282px;height:112px;border-radius:22px;padding:14px 18px;--bgc:#F2F2F7');
+ b.style.transformOrigin='100% 100%';tw(b,{s:[[.15,.3],[.8,1,'spring']],o:[[.15,0],[.22,1,'lin']]});sfx(.15,'sent');
+ const t=['Сколько','стоит','вам','одна','заявка','из','Инстаграма?'],ts=[.1,.55,.95,1.15,1.5,1.95,2.1];
+ const w=el(b,'rel','font-size:22px;font-weight:500;color:#fff;line-height:1.22;display:block;letter-spacing:-.02em');
+ t.forEach((s,i)=>{const sp=el(w,'rel','margin-right:.26em',s);tw(sp,{o:[[ts[i],0],[ts[i]+.22,1,'out']],y:[[ts[i],8],[ts[i]+.4,0,'out']],b:[[ts[i],4],[ts[i]+.3,0,'out']]})});
+ const dl=el(S.g,'','font-size:11px;color:'+G+';font-weight:500;text-align:right;left:20px;width:350px;top:418px');dl.textContent='Доставлено';fadeIn(dl,2.35,.3);
+}
+/* ============ S2  2.9 – 7.3 ============ */
+{const S=scene(2.9,7.3,'#000');
+ const A=el(S.g,'','left:0;top:0;width:390px;height:693px');tw(A,{o:[[4.85,1],[5.1,0,'out']],s:[[4.85,1],[5.1,.92,'out']],b:[[4.85,0],[5.1,5,'out']]});
+ const gl=el(A,'','border-radius:50%;background:radial-gradient(circle,rgba(255,149,0,.45),rgba(255,149,0,0) 68%);filter:blur(14px)');at(gl,cx0,290,260,260);tw(gl,{o:[[3.0,0],[3.6,1,'out']],s:[[3.0,.5],[4.5,1.1,'soft']]});
+ const q=el(A,'','font-size:128px;font-weight:300;line-height:1;text-align:center;background:linear-gradient(180deg,#FFD479,#FF9500);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent','?');at(q,cx0,290,160,150);
+ pop(q,3.0,.8,.3);tw(q,{r:[[3.0,-8],[3.9,0,'soft']]});sfx(3.0,'pop',{p:.8});
+ words(A,'Если вы не знаете точную цифру —',cx0,410,340,22,'#fff',[3.1,3.45,3.6,3.8,4.2,4.55],{h:80,hl:{4:'color:#FF9F0A',5:'color:#FF9F0A'}});
+ const al=el(S.g,'','border-radius:14px;overflow:hidden;background:rgba(38,38,40,.94);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1),0 20px 60px rgba(0,0,0,.6)');at(al,cx0,346,270,162);
+ tw(al,{s:[[5.05,1.12],[5.55,1,'spring']],o:[[5.05,0],[5.12,1,'lin']]});sfx(5.05,'alert');
+ el(al,'','left:0;top:20px;width:270px;text-align:center;font-size:17px;font-weight:600;color:#fff','Внимание');
+ words(al,'вы, скорее всего, переплачиваете.',135,78,230,15,'#EBEBF5',[5.15,5.6,5.95,6.12],{wt:400,h:56,hl:{3:'color:#FF453A;font-weight:600'}});
+ el(al,'','background:rgba(255,255,255,.14);left:0;top:118px;width:270px;height:.5px');el(al,'','background:rgba(255,255,255,.14);left:135px;top:118px;width:.5px;height:44px');
+ el(al,'','font-size:17px;font-weight:400;color:#0A84FF;text-align:center;line-height:44px;left:0;top:118px;width:135px;height:44px','Позже');
+ el(al,'','font-size:17px;font-weight:600;color:#0A84FF;text-align:center;line-height:44px;left:135px;top:118px;width:135px;height:44px','Проверить');
+ const hi=el(al,'','left:135px;top:118px;width:135px;height:44px;background:rgba(255,255,255,.14)');tw(hi,{o:[[6.75,0],[6.8,1,'lin'],[7.05,1],[7.15,0,'lin']]});sfx(6.78,'tick',{v:.7});
+}
+/* widget helper */
+function widget(p,cy,dark,tin,hasTag){const c=el(p,dark?'dk':'card','');at(c,cx0,cy,300,152);c.style.borderRadius='26px';c.style.transformOrigin='50% 100%';
+ tw(c,{y:[[tin,70],[tin+.55,0,'spring']],o:[[tin,0],[tin+.12,1,'lin']]});sfx(tin,'whoosh',{d:.4,v:.3});
+ const ic=el(c,'pill','left:16px;top:15px;width:22px;height:22px;background:'+(dark?'#30D158':'#FF3B30'),'<div style="width:14px;height:14px">'+SV.arrowUp+'</div>');ic.style.padding='0';
+ el(c,'','left:46px;top:17px;font-size:14px;font-weight:600;color:'+(dark?GD:G),'Цена одной заявки');
+ return {c,ic}}
+/* ============ S3  7.3 – 12.7 ============ */
+{const S=scene(7.3,12.7,'#F2F2F7',14);
+ const ic=icon(S.g,'spa',cx0,185,64);pop(ic,7.45,.7,.2);sfx(7.45,'pop');
+ words(S.g,'Премиальный спа-центр',cx0,262,360,25,'#000',[7.5,8.2],{h:36,hl:{1:'color:#1F9E6B'}});
+ const pill=el(S.g,'pill','background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.06);font-size:14px;color:#3C3C43;gap:6px;font-weight:500');at(pill,cx0,306,106,30);
+ pill.innerHTML=`<div style="width:15px;height:15px">${SV.pin}</div>Ташкент`;pop(pill,9.2,.5,.5);sfx(9.2,'pop',{p:1.15});
+ const {c,ic:ai}=widget(S.g,430,false,9.95);
+ const v=el(c,'tn','left:16px;top:50px;font-size:58px;font-weight:700;color:#000;letter-spacing:-.035em;line-height:1.1','$0.00');
+ fns.push(t=>{v.textContent='$'+ramp(t,11.25,12.35,0,2.24,'out').toFixed(2)});ticks(11.25,12.35,12,.4);
+ const tag=el(c,'pill','left:16px;top:112px;height:24px;padding:0 11px;background:rgba(255,59,48,.12);color:#FF3B30;font-size:13px;font-weight:600','Дорого');pop(tag,12.4,.5,.4);tag.style.transformOrigin='0 50%';sfx(12.4,'pop',{p:.8});
+}
+/* ============ S4  12.7 – 15.9 ============ */
+{const S=scene(12.7,15.9,'#000',26);
+ const cal=el(S.g,'app','background:#fff;flex-direction:column');at(cal,cx0,175,64,64);cal.style.borderRadius='14px';
+ cal.innerHTML=`<div style="color:#FF3B30;font-size:9.5px;font-weight:700;margin-top:6px;letter-spacing:.02em">МЕСЯЦ</div><div style="color:#000;font-size:36px;font-weight:300;line-height:1.05;letter-spacing:-.04em">1</div>`;pop(cal,12.8,.7,.2);sfx(12.8,'pop');
+ words(S.g,'Через месяц работы с нами —',cx0,254,350,22,'#fff',[12.8,13.2,13.55,13.95,14.0],{h:70});
+ const {c,ic}=widget(S.g,420,true,13.3);ic.style.background='#FF453A';ic.firstChild.innerHTML=SV.arrowUp;
+ const nv=el(c,'tn','left:16px;top:48px;font-size:58px;font-weight:700;color:#FF453A;letter-spacing:-.035em;line-height:1.1','$2.24');
+ const was=el(c,'tn','left:16px;top:116px;font-size:14px;font-weight:500;color:'+GD,'было <span style="text-decoration:line-through;text-decoration-thickness:1.2px">$2.24</span>');tw(was,{o:[[14.3,0],[14.6,1,'out']],y:[[14.3,6],[14.7,0,'out']]});
+ fns.push(t=>{const u=ramp(t,14.45,15.45,0,1,'inout');nv.textContent='$'+(2.24+(.42-2.24)*u).toFixed(2);const r=Math.round(255+(48-255)*u),g=Math.round(69+(209-69)*u),b=Math.round(58+(88-58)*u);nv.style.color=`rgb(${r},${g},${b})`;ic.style.background=`rgb(${r},${g},${b})`;ic.firstChild.style.transform=`rotate(${180*u}deg)`});
+ ticks(14.45,15.45,14,.4);
+ const bg=el(c,'pill','right:16px;top:13px;height:26px;padding:0 11px;background:rgba(48,209,88,.18);color:#30D158;font-size:14px;font-weight:700','−81%');bg.style.transformOrigin='100% 50%';pop(bg,15.42,.55,.3);sfx(15.42,'success');
+}
+/* ============ S5  15.9 – 22.9 ============ */
+{const S=scene(15.9,22.9,'#F2F2F7',30);
+ const R=el(S.g,'','left:0;top:0;width:390px;height:693px');R.style.transformOrigin='50% 290px';
+ tw(R,{y:[[18.35,0],[19.0,-120,'inout']],s:[[18.35,1],[19.0,.72,'inout']]});
+ const sv=el(R,'','');at(sv,cx0,290,170,170);
+ sv.innerHTML=`<svg viewBox="0 0 170 170" width="170" height="170"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9F0A"/><stop offset="1" stop-color="#FF375F"/></linearGradient></defs><circle cx="85" cy="85" r="68" fill="none" stroke="rgba(120,120,128,.16)" stroke-width="16"/><circle id="ringP" cx="85" cy="85" r="68" fill="none" stroke="url(#rg)" stroke-width="16" stroke-linecap="round" stroke-dasharray="427.3" stroke-dashoffset="427.3" transform="rotate(-90 85 85)"/></svg>`;
+ pop(sv,15.95,.7,.5);sfx(15.95,'pop');
+ const rt=el(R,'tn','font-size:40px;font-weight:700;text-align:center;line-height:1;letter-spacing:-.04em;color:#000','×6,5');at(rt,cx0,290,150,50);
+ tw(rt,{s:[[16.1,.5],[16.7,1,'spring']],o:[[16.1,0],[16.2,1,'lin']]});
+ fns.push(t=>{const p=ramp(t,16.1,17.7,0,1,'inout');const e=document.getElementById('ringP');if(e)e.setAttribute('stroke-dashoffset',427.3*(1-p))});
+ ticks(16.1,17.7,16,.3);sfx(17.75,'success');
+ const cap=words(S.g,'в 6,5 раз больше заявок',cx0,410,330,23,'#000',[16.5,16.8,17.1,17.4,17.7],{h:60,hl:{4:'color:#FF375F'}});tw(cap,{o:[[18.3,1],[18.55,0,'out']]});
+ const c=el(S.g,'card','');at(c,cx0,415,330,172);c.style.borderRadius='20px';c.style.transformOrigin='50% 100%';tw(c,{y:[[18.3,60],[18.85,0,'spring']],o:[[18.3,0],[18.42,1,'lin']]});sfx(18.3,'whoosh',{d:.4,v:.3});
+ el(c,'','left:16px;top:86px;width:298px;height:.5px;background:rgba(60,60,67,.18)');
+ const row=(y,label,col,grad,tin)=>{const g=el(c,'','left:0;top:'+y+'px;width:330px;height:86px');
+  el(g,'','left:16px;top:11px;font-size:13px;font-weight:600;color:'+G,label);
+  const n=el(g,'tn','left:16px;top:26px;font-size:30px;font-weight:700;line-height:1.15;letter-spacing:-.03em;color:'+col,'0');
+  el(g,'','right:16px;top:41px;font-size:12px;font-weight:500;color:'+G+';text-align:right','заявок/мес');
+  const tr=el(g,'','left:16px;top:68px;width:298px;height:6px;border-radius:3px;background:rgba(120,120,128,.16)');
+  const f=el(tr,'','left:0;top:0;height:6px;width:298px;border-radius:3px;transform-origin:0 50%;background:'+grad);
+  if(tin){tw(g,{o:[[tin,0],[tin+.25,1,'out']]})}return {n,f}};
+ const r1=row(0,'Было','#8A8A8E','#8A8A8E');const r2=row(86,'Стало','#007AFF','linear-gradient(90deg,#0A84FF,#5AC8FA)',20.75);
+ tw(r1.f,{sx:[[18.7,0],[19.8,.154,'out']]});tw(r2.f,{sx:[[20.95,0],[22.5,1,'inout']]});
+ fns.push(t=>{r1.n.textContent=Math.round(ramp(t,18.6,19.8,0,212,'out'));r2.n.textContent=Math.round(ramp(t,20.9,22.5,0,1378,'inout')).toLocaleString('ru-RU').replace(/ | /g,' ')});
+ ticks(18.6,19.8,8,.3);ticks(20.9,22.5,16,.35);sfx(19.85,'pop',{p:.9});sfx(22.55,'success');sfx(20.75,'whoosh',{d:.4,v:.3});
+}
+/* ============ S6  22.9 – 30.5 ============ */
+{const S=scene(22.9,30.5,'#000',20);
+ const P1=el(S.g,'','left:0;top:0;width:390px;height:693px');tw(P1,{o:[[24.75,1],[24.95,0,'out']],s:[[24.75,1],[24.95,.94,'out']]});
+ const bn=el(P1,'glass','border-radius:22px');at(bn,cx0,290,352,74);
+ tw(bn,{y:[[23.0,-200],[23.55,0,'spring']],x:[[24.35,0],[24.75,-440,'in']],o:[[23.0,0],[23.1,1,'lin']]});sfx(23.0,'chime');sfx(24.35,'whoosh',{d:.35,v:.45});
+ const bi=icon(bn,'ig',0,0,38);bi.style.left='14px';bi.style.top='18px';
+ el(bn,'','left:62px;top:14px;font-size:15px;font-weight:600;color:#fff','Instagram Ads');el(bn,'','right:14px;top:15px;font-size:13px;color:'+GD,'сейчас');
+ el(bn,'','left:62px;top:35px;font-size:15px;color:#E5E5EA;width:270px;line-height:1.25','Кампания запущена');
+ words(P1,'Мы не просто запускаем рекламу',cx0,400,320,23,'#fff',[23.1,23.35,23.55,23.9,24.2],{h:70,hl:{1:'color:#FF453A',2:'color:#FF453A'}});
+ const P2=el(S.g,'','left:0;top:0;width:390px;height:693px');tw(P2,{o:[[24.95,0],[25.1,1,'out'],[27.0,1],[27.25,0,'out']],s:[[24.95,.94],[25.1,1,'out'],[27.0,1],[27.25,.94,'out']]});
+ const cr=el(P2,'','border-radius:26px;overflow:hidden;background:linear-gradient(150deg,#FF9F0A 0%,#FF375F 55%,#BF5AF2 100%);box-shadow:0 18px 50px rgba(255,55,95,.28)');at(cr,cx0,290,170,214);
+ tw(cr,{s:[[25.05,.6],[25.65,1,'spring']],r:[[25.05,-6],[25.7,-2,'soft']],o:[[25.05,0],[25.12,1,'lin']]});sfx(25.05,'pop',{p:.9});
+ const sparkle=el(cr,'','left:55px;top:65px;width:60px;height:60px');sparkle.innerHTML=SV.star;tw(sparkle,{r:[[25.1,-30],[27,30,'lin']],s:[[25.3,0],[25.9,1,'spring']]});
+ el(cr,'pill','left:12px;top:12px;height:22px;padding:0 10px;background:rgba(255,255,255,.28);color:#fff;font-size:11px','Reels');
+ const bar=el(cr,'','left:14px;bottom:14px;width:142px;height:3px;border-radius:2px;background:rgba(255,255,255,.35)');const bf=el(bar,'','left:0;top:0;width:142px;height:3px;border-radius:2px;background:#fff;transform-origin:0 50%');tw(bf,{sx:[[25.2,0],[27,1,'lin']]});
+ const coin=el(P2,'pill','background:#30D158;color:#fff;font-size:26px;font-weight:600;box-shadow:0 6px 20px rgba(48,209,88,.45);border:2px solid #000');at(coin,cx0+82,200,46,46);coin.textContent='$';pop(coin,26.4,.6,.2);sfx(26.45,'success',{v:.6});
+ words(P2,'Мы находим креатив, который продаёт',cx0,440,320,23,'#fff',[25.05,25.4,25.9,26.25,26.55],{h:70,hl:{2:'color:#FF9F0A',4:'color:#30D158'}});
+ const P3=el(S.g,'','left:0;top:0;width:390px;height:693px');tw(P3,{o:[[27.2,0],[27.4,1,'out'],[29.0,1],[29.2,0,'out']],s:[[27.2,.94],[27.4,1,'out'],[29.0,1],[29.2,.94,'out']]});
+ [[100,1],[74,.7],[48,.45]].forEach(([r,o],i)=>{const rg=el(P3,'','border-radius:50%;border:1px solid rgba(10,132,255,'+(.8*o)+')');at(rg,cx0,290,r*2,r*2);tw(rg,{s:[[27.3+i*.1,.3],[27.9+i*.1,1,'spring']],o:[[27.3+i*.1,0],[27.4+i*.1,1,'lin']]})});
+ const cg=icon(P3,'person',cx0,290,46);cg.style.background='#0A84FF';cg.style.borderRadius='50%';cg.firstChild.style.transform='scale(.62)';pop(cg,27.35,.6,.3);sfx(27.35,'pop',{p:.9});
+ const cols=['#FF9F0A','#FF375F','#30D158','#BF5AF2','#5AC8FA','#FFD60A','#FF6B35','#64D2FF'];
+ for(let i=0;i<8;i++){const ang=i/8*Math.PI*2-Math.PI/2+.2,rr=i%2?74:100;const x=cx0+Math.cos(ang)*rr,y=290+Math.sin(ang)*rr;
+  const a=icon(P3,'person',x,y,36);a.style.borderRadius='50%';a.style.background=cols[i];a.firstChild.style.transform='scale(.68)';const tt=27.6+i*.16;pop(a,tt,.5,.2);sfx(tt,'pop',{p:1+i*.06,v:.5})}
+ words(P3,'и аудиторию, которая реально пишет',cx0,462,320,23,'#fff',[27.45,27.6,28.2,28.5,28.85],{h:70,hl:{1:'color:#0A84FF'}});
+ const P4=el(S.g,'','left:0;top:0;width:390px;height:693px');tw(P4,{o:[[29.15,0],[29.3,1,'out']],s:[[29.15,.96],[29.3,1,'out']]});
+ const mk=(txt,y,t,w)=>{const b=el(P4,'bub in tail','left:30px;top:'+y+'px;width:'+w+'px;font-size:18px');b.textContent=txt;b.style.transformOrigin='0 100%';tw(b,{s:[[t,.4],[t+.5,1,'spring']],o:[[t,0],[t+.06,1,'lin']]});sfx(t,'recv');return b};
+ mk('Здравствуйте! Хочу записаться',185,29.2,236);mk('На завтра есть время?',245,29.6,200);
+ const ok=el(P4,'','border-radius:20px;background:linear-gradient(135deg,#30D158,#25A244);box-shadow:0 12px 36px rgba(48,209,88,.28)');at(ok,cx0,352,300,66);tw(ok,{s:[[29.95,.6],[30.5,1,'spring']],o:[[29.95,0],[30.02,1,'lin']]});sfx(29.95,'success');
+ const ck=el(ok,'pill','left:14px;top:15px;width:36px;height:36px;background:rgba(255,255,255,.25)','<div style="width:22px;height:22px">'+SV.check+'</div>');
+ el(ok,'','left:62px;top:13px;font-size:17px;font-weight:600;color:#fff;white-space:nowrap','Запись подтверждена');el(ok,'','left:62px;top:36px;white-space:nowrap;font-size:14px;color:rgba(255,255,255,.82)','Завтра, 15:00');
+ words(P4,'и записывается',cx0,440,320,25,'#fff',[29.45,29.95],{h:50,hl:{1:'color:#30D158'}});
+}
+/* ============ S7  30.5 – 34.9 ============ */
+{const S=scene(30.5,34.9,'linear-gradient(170deg,#4F46E5 0%,#0A84FF 55%,#5AC8FA 100%)',45);
+ words(S.g,'Работаем со',cx0,250,330,24,'#fff',[30.6,31.0],{h:40});
+ const defs=[['spa','Спа',31.3,'12'],['salon','Салоны красоты',31.9,'8'],['clinic','Клиники',32.95,'5'],['well','Wellness-центры',33.85,'24']];
+ defs.forEach(([k,lab,t,n],i)=>{const cx=cx0-120+i*80,cy=340;const ic=icon(S.g,k,cx,cy,64);pop(ic,t,.7,.2);sfx(t,'pop',{p:1+i*.07});
+  const lb=el(S.g,'','font-size:11.5px;font-weight:500;color:#fff;text-align:center;line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.25)',lab);at(lb,cx,cy+49,76,28);lb.style.top=(cy+40)+'px';fadeIn(lb,t+.15,.3,4);
+  const bd=el(S.g,'pill','background:#FF3B30;color:#fff;font-size:13px;font-weight:600;height:22px;min-width:22px;padding:0 6px;box-shadow:0 0 0 1.5px rgba(255,255,255,.0)');at(bd,cx+27,cy-27,22,22);bd.textContent=n;pop(bd,t+.55,.45,0);sfx(t+.55,'pop',{p:1.5,v:.25})});
+}
+/* ============ S8  34.9 – 37.6 ============ */
+{const S=scene(34.9,37.6,'#F2F2F7');
+ const sh=el(S.g,'card','border-radius:30px');at(sh,cx0,346,290,326);tw(sh,{y:[[34.95,420],[35.6,0,'spring']]});sfx(34.95,'whoosh',{d:.5,v:.4});
+ const ic=icon(sh,'ig',0,0,56);ic.style.left='117px';ic.style.top='26px';tw(ic,{s:[[35.1,.5],[35.6,1,'spring']]});
+ el(sh,'','left:0;top:94px;width:290px;text-align:center;font-size:17px;font-weight:600;color:#000','Instagram Ads');
+ const l1=el(sh,'','left:0;top:120px;width:290px;text-align:center;font-size:14px;font-weight:500;color:'+G,'Стоимость');fadeIn(l1,35.0,.3,6);
+ const pr=el(sh,'tn','left:0;top:150px;width:290px;text-align:center;line-height:1.1;white-space:nowrap','<span style="font-size:22px;font-weight:500;color:'+G+';margin-right:6px" id="otx">от</span><span id="prv" style="font-size:58px;font-weight:700;color:#000;letter-spacing:-.035em">$0</span>');
+ tw(pr,{o:[[35.8,0],[36.0,1,'out']]});const ot=document.getElementById('otx');
+ fns.push(t=>{document.getElementById('prv').textContent='$'+Math.round(ramp(t,35.85,36.75,0,500,'out'))});ticks(35.85,36.75,10,.4);
+ const m=el(sh,'','left:0;top:224px;width:290px;text-align:center;font-size:15px;font-weight:500;color:'+G,'в месяц');fadeIn(m,36.8,.3,6);
+ const bt=el(sh,'pill','left:20px;top:262px;width:250px;height:48px;background:#007AFF;color:#fff;font-size:17px;font-weight:600','Начать');pop(bt,37.0,.5,.6);sfx(37.0,'pop',{p:1.1});
+}
+/* ============ S9  37.6 – 43.4 ============ */
+{const S=scene(37.6,43.4,'#fff');
+ words(S.g,'Оставьте заявку по ссылке',cx0,150,330,27,'#000',[37.75,38.2,38.7,38.85],{h:80,hl:{1:'color:#007AFF'}});
+ const bt=el(S.g,'pill','background:#007AFF;color:#fff;font-size:17px;font-weight:600;gap:8px;box-shadow:0 8px 22px rgba(0,122,255,.3)');at(bt,cx0,232,262,50);
+ bt.innerHTML=`<div style="width:20px;height:20px">${SV.link}</div>Оставить заявку`;
+ tw(bt,{s:[[38.3,.6],[38.85,1,'spring'],[39.0,1],[39.12,.95,'out'],[39.4,1,'spring']],o:[[38.3,0],[38.4,1,'lin']]});sfx(38.3,'pop',{p:1});
+ const ft=el(S.g,'','border-radius:50%;background:rgba(60,60,67,.22);box-shadow:0 0 0 1px rgba(60,60,67,.12)');at(ft,cx0+40,240,40,40);tw(ft,{o:[[38.6,0],[38.8,1,'out'],[39.5,1],[39.7,0,'out']],x:[[38.6,60],[39.05,0,'inout']],y:[[38.6,120],[39.05,0,'inout']],s:[[39.0,1],[39.12,.75,'out'],[39.4,1,'spring']]});
+ const rp=el(S.g,'','border-radius:50%;border:2px solid rgba(0,122,255,.5)');at(rp,cx0+40,240,40,40);tw(rp,{s:[[39.08,.4],[39.7,3,'out']],o:[[39.08,.9],[39.7,0,'out']]});sfx(39.05,'tap');
+ words(S.g,'разберём, сколько заявок может приносить ваш бизнес',cx0,340,310,22,'#000',[39.45,40.2,40.8,41.4,41.65,42.2,42.45],{h:110,hl:{2:'color:#007AFF',6:'color:#007AFF'}});
+ const cd=el(S.g,'card','border-radius:22px');at(cd,cx0,505,320,138);tw(cd,{y:[[39.5,70],[40.1,0,'spring']],o:[[39.5,0],[39.65,1,'lin']]});sfx(39.5,'whoosh',{d:.4,v:.3});
+ el(cd,'','left:16px;top:13px;font-size:13px;font-weight:600;color:'+G,'Заявки в Instagram');
+ [40,70,100].forEach(y=>el(cd,'','left:16px;top:'+(y+10)+'px;width:288px;height:.5px;background:rgba(60,60,67,.14)'));
+ const hs=[.2,.3,.25,.45,.4,.6,.75,.7,1];
+ hs.forEach((h,i)=>{const bx=el(cd,'','left:'+(18+i*31.5)+'px;bottom:16px;width:20px;height:'+(h*72)+'px;border-radius:5px;background:'+(i==hs.length-1?'#34C759':'linear-gradient(180deg,#5AC8FA,#0A84FF)'));bx.style.transformOrigin='50% 100%';const tt=40.7+i*.2;tw(bx,{sy:[[tt,0],[tt+.5,1,'spring']]});sfx(tt,'tick',{v:.35,p:1+i*.07})});
+ const up=el(cd,'pill','right:14px;top:10px;width:26px;height:26px;background:#34C759','<div style="width:16px;height:16px">'+SV.arrowUp+'</div>');pop(up,42.5,.5,.2);sfx(42.5,'success');
+}
+/* ============ RENDER ============ */
+const TOTAL=43.4;
+window.__SFX=SFX;window.__TOTAL=TOTAL;
+window.render=function(t){
+  scenes.forEach((S,i)=>{const nx=scenes[i+1];const vis=t>=S.a-.2&&(!nx||t<=nx.a+.2);S.r.style.display=vis?'block':'none'});
+  for(const d of tracked){const T=d._t;const g=(k,def)=>T[k]?val(T[k],t):def;
+    const x=g('x',0),y=g('y',0),r=g('r',0),s=g('s',1),sx=g('sx',1),sy=g('sy',1),o=g('o',1),b=g('b',0);
+    d.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s*sx},${s*sy})`;d.style.opacity=o;d.style.filter=b>.05?`blur(${b}px)`:'';}
+  fns.forEach(f=>f(t));
+};
+render(0);
+</script></body></html>
