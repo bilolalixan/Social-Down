@@ -1,8 +1,9 @@
 import sys,numpy as np
 from PIL import Image,ImageDraw,ImageFont
-S='/tmp/claude-0/-home-user-Social-Down/43c41a0e-1397-56a9-ae81-7fcc7bd40cc6/scratchpad/menu/hi/p-%02d.png'
+S='/tmp/claude-0/-home-user-Social-Down/43c41a0e-1397-56a9-ae81-7fcc7bd40cc6/scratchpad/menu/hi2/p-%02d.png'
 OUT='beanberry-design/menu-stories/'
 BG=(228,218,207);INK=(52,46,42)
+WM='/tmp/claude-0/-home-user-Social-Down/43c41a0e-1397-56a9-ae81-7fcc7bd40cc6/scratchpad/menu/wordmark-brown.png'
 F=ImageFont.truetype('/usr/share/fonts/opentype/inter/InterDisplay-Regular.otf',26)
 def story(crop,name,label):
     k=min(1080/crop.width,1620/crop.height)
@@ -11,7 +12,7 @@ def story(crop,name,label):
     cv=Image.new('RGB',(1080,1920),BG)
     cv.paste(c,((1080-w)//2,(1920-h)//2))
     d=ImageDraw.Draw(cv)
-    d.text((60,90),'BEANBERRY',font=F,fill=INK)
+    wm=Image.open(WM);wm=wm.resize((220,round(wm.height*220/wm.width)),Image.LANCZOS);cv.paste(wm,(60,84),wm)
     d.text((1020,90),'MENU',font=F,fill=INK,anchor='ra')
     d.text((540,1810),label,font=F,fill=INK,anchor='ma')
     cv.save(OUT+name+'.png')
