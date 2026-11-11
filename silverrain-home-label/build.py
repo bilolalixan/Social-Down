@@ -17,6 +17,13 @@ def car_office(cx,base):
     ox=cx-22.5+23*s+3
     off=f'<g transform="translate({ox:.2f},{base-20*s:.2f}) scale({s})"><path fill="#fff" fill-rule="evenodd" d="M1 20 V2.6 C1 2.2 1.2 2 1.6 2 H10.4 C10.8 2 11 2.2 11 2.6 V8 H14.4 C14.8 8 15 8.2 15 8.6 V20 H12.5 V17 H3.5 V20 Z"/><path fill="#000" d="M3 4 H5 V6 H3 Z M6 4 H8 V6 H6 Z M3 7.4 H5 V9.4 H3 Z M6 7.4 H8 V9.4 H6 Z M3 10.8 H5 V12.8 H3 Z M6 10.8 H8 V12.8 H6 Z M3 14 H5 V16 H3 Z M6 14 H8 V16 H6 Z M11.8 10.5 H13 V12 H11.8 Z M11.8 13.4 H13 V14.9 H11.8 Z M11.8 16 H13 V17 H11.8 Z"/></g>'
     return car+off
+
+def car_icon(cx,cy):
+    s=1.15
+    return f'<g transform="translate({cx-11.5*s:.2f},{cy-7*s:.2f}) scale({s})"><path fill="#fff" fill-rule="evenodd" d="M2 9 L3.2 5.6 C3.5 4.8 4.2 4.3 5 4.3 H15 C15.8 4.3 16.4 4.7 16.9 5.3 L19.2 7.6 L21.6 8.2 C22.4 8.4 23 9.1 23 9.9 V11.2 H21.2 C20.9 12.6 19.7 13.6 18.2 13.6 C16.7 13.6 15.5 12.6 15.2 11.2 H8.8 C8.5 12.6 7.3 13.6 5.9 13.6 C4.4 13.6 3.2 12.6 2.9 11.2 H1 V10.4 C1 9.8 1.4 9.3 2 9 Z"/><path fill="#000" d="M5 5.7 H10.2 V8.4 H4.1 Z M11.4 5.7 H15 C15.3 5.7 15.6 5.8 15.8 6 L17.9 8.4 H11.4 Z"/><circle cx="5.9" cy="11.6" r="2.1" fill="#000"/><circle cx="5.9" cy="11.6" r="1" fill="#fff"/><circle cx="18.2" cy="11.6" r="2.1" fill="#000"/><circle cx="18.2" cy="11.6" r="1" fill="#fff"/></g>'
+def office_icon(cx,cy):
+    s=1.05
+    return f'<g transform="translate({cx-7.5*s:.2f},{cy-11*s:.2f}) scale({s})"><path fill="#fff" fill-rule="evenodd" d="M1 20 V2.6 C1 2.2 1.2 2 1.6 2 H10.4 C10.8 2 11 2.2 11 2.6 V8 H14.4 C14.8 8 15 8.2 15 8.6 V20 H12.5 V17 H3.5 V20 Z"/><path fill="#000" d="M3 4 H5 V6 H3 Z M6 4 H8 V6 H6 Z M3 7.4 H5 V9.4 H3 Z M6 7.4 H8 V9.4 H6 Z M3 10.8 H5 V12.8 H3 Z M6 10.8 H8 V12.8 H6 Z M3 14 H5 V16 H3 Z M6 14 H8 V16 H6 Z M11.8 10.5 H13 V12 H11.8 Z M11.8 13.4 H13 V14.9 H11.8 Z M11.8 16 H13 V17 H11.8 Z"/></g>'
 cy=362
 def ring(cx):return f'<circle cx="{cx}" cy="{cy}" r="25" fill="none" stroke="#fff" stroke-width="1"/>'
 def front():
@@ -28,13 +35,14 @@ def front():
     out.append(T(46,190,14.5,'СПОСОБ ПРИМЕНЕНИЯ'))
     for k,t in enumerate(['Распылите 2–3 раза на текстиль или','в воздух по мере необходимости.']):out.append(T(46,216+19*k,14.5,t))
     out.append('<rect x="42" y="262" width="328" height="1" fill="#fff"/>')
-    for cx in (75.5,207.5,334.5):out.append(ring(cx))
-    dy=cy-401.5
-    out.append(f'<g transform="translate(0,{dy})"><path fill="#fff" d="{leaf}"/><path fill="#fff" d="{house}"/></g>')
-    out.append(car_office(207.5,cy+9))
-    labs={75.5:['ДЛЯ БЕЛЬЯ И','ПОМЕЩЕНИЙ'],207.5:['СТОЙКАЯ','СВЕЖЕСТЬ'],334.5:['ГАРМОНИЯ В','ВАШЕМ ДОМЕ']}
+    X=[67,159.7,252.3,345]
+    for cx in X:out.append(ring(cx))
+    out.append(f'<g transform="translate({X[0]-75.9:.2f},{cy-402.6:.2f})"><path fill="#fff" d="{leaf}"/></g>')
+    out.append(f'<g transform="translate({X[3]-335:.2f},{cy-402:.2f})"><path fill="#fff" d="{house}"/></g>')
+    out.append(car_icon(X[1],cy));out.append(office_icon(X[2],cy))
+    labs={X[0]:['ДЛЯ БЕЛЬЯ И','ПОМЕЩЕНИЙ'],X[1]:['ДЛЯ','АВТО'],X[2]:['ДЛЯ','ОФИСА'],X[3]:['ГАРМОНИЯ В','ВАШЕМ ДОМЕ']}
     for cx,l in labs.items():
-        for k,t in enumerate(l):out.append(T(cx,cy+25+19+k*13,10.5,t,'middle',.2))
+        for k,t in enumerate(l):out.append(T(cx,cy+25+19+k*13,10,t,'middle',.2))
     out.append(T(46,501,14.5,'SILVER RAIN HOME',w=500))
     out.append(T(46,524,11.5,'Ташкент, Узбекистан'))
     out.append(T(46,542,11.5,'www.silverrain.asia'))
