@@ -19,11 +19,11 @@ SEC=[
 ('about-story','about',2700,2300,'Biz haqimizda · 01','Quadro tarixi','Sarlavha, matn va vertikal foto: "kitob sahifasi" uslubida.'),
 ('about-photo','about',4600,2300,'Biz haqimizda · 02','Katta fotolavha','Foto ustida manifest matni: katta kompaniyalar va oilalar uchun.'),
 ('contact-hero','contact',0,2300,'Aloqa · 01','Aloqa va manzil','Bordo blok: ish vaqti, manzil, telefon va elektron pochta.'),
-('contact-find','contact',1800,2300,'Aloqa · 02','Xarita va yo\'l','"Bizni qanday topasiz": xarita bloki va fotolavha.'),
+('contact-find','map',0,1800,'Aloqa · 02','Xarita va yo\'l','"Bizni qanday topasiz": interaktiv xarita va manzil belgisi.'),
 ]
 os.makedirs('sec',exist_ok=True)
 for sid,pg,y0,h,*_ in SEC:
-    f=Image.open(f'd-{pg}-full.png');y1=min(f.height,y0+h);f.crop((0,y0,2880,y1)).save(f'sec/{sid}.png')
+    f=Image.open('map-sec.png' if pg=='map' else f'd-{pg}-full.png');y1=min(f.height,y0+h);f.crop((0,y0,2880,y1)).save(f'sec/{sid}.png')
 CSS='''
 *{margin:0;padding:0;box-sizing:border-box}
 .s{position:relative;width:1080px;height:1350px;overflow:hidden;background:#fff;color:#111;font-family:"Inter Display","SF Pro Display",sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.02em}
@@ -58,6 +58,6 @@ slides.append(doc(f'''<div class="tag"><span>Quadro</span><span>{N-1:02d} / {N}<
 <div class="ph" style="left:46px;top:560px;transform:rotate(-4deg)"><img src="{P}/m-menu-top.png"></div><div class="ph" style="left:390px;top:520px;z-index:3"><img src="{P}/m-home-top.png"></div><div class="ph" style="left:734px;top:560px;transform:rotate(4deg)"><img src="{P}/m-contact-top.png"></div>'''))
 # cta (black)
 slides.append(doc(f'''<div class="tag"><span>Quadro</span><span>{N:02d} / {N}</span></div>
-<div style="position:absolute;left:72px;top:330px;right:72px"><div class="lbl" style="color:#888">Sizga ham kerakmi?</div><h1 style="font-size:150px;margin-top:26px;color:#fff">Sizning biznesingizga ham shunday sayt</h1><div class="sub" style="color:#aaa;font-size:36px;margin-top:50px">Har bir bo'lim uchun alohida dizayn, mobil versiya va bron formasi.</div><div style="margin-top:60px;display:inline-block;border:2px solid #fff;border-radius:100px;padding:26px 46px;font-size:34px">@bilolalixan</div></div>''','dk'))
+<div style="position:absolute;left:72px;top:330px;right:72px"><div class="lbl" style="color:#888">Sizga ham kerakmi?</div><h1 style="font-size:150px;margin-top:26px;color:#fff">Sizning biznesingizga ham shunday sayt</h1><div class="sub" style="color:#aaa;font-size:36px;margin-top:50px">Har bir bo'lim uchun alohida dizayn, mobil versiya va bron formasi. Murojaat uchun Direct'ga yozing.</div><div style="margin-top:60px;display:inline-block;border:2px solid #fff;border-radius:100px;padding:26px 46px;font-size:38px"><span style="opacity:.6;font-size:26px;margin-right:16px">Direct</span>@odex.asia</div></div>''','dk'))
 for i,s in enumerate(slides,1):open(f'w/s{i:02d}.html','w').write(s)
 print(len(slides))
